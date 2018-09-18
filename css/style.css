@@ -72,6 +72,20 @@ h1 {
   margin: 0 0 40px;
 }
 
+h2.error {
+  text-align: center;
+  color: #FF2222;
+  font-weight: 300;
+  margin: 0 0 20px;
+}
+
+h2.success {
+  text-align: center;
+  color: #008800;
+  font-weight: 300;
+  margin: 0 0 20px;
+}
+
 label {
   position: absolute;
   -webkit-transform: translateY(6px);
@@ -86,19 +100,36 @@ label {
 label .req {
   margin: 2px;
   color: #1ab188;
+  z-index: -1;
 }
 
 label.active {
-  -webkit-transform: translateY(50px);
-          transform: translateY(50px);
+  -webkit-transform: translateX(400px) translateY(6px);
+          transform: translateX(400px) translateY(6px);
   left: 2px;
   font-size: 14px;
 }
+
+.top-row label.active {
+  -webkit-transform: translateX(150px) translateY(6px);
+          transform: translateX(150px) translateY(6px);
+  left: 2px;
+  font-size: 14px;
+}
+
+.field_error {
+  font-size: 16px;
+  color: #FF2222 !important;
+  margin: 5px;
+}
+
 label.active .req {
   opacity: 0;
+  display: none;
 }
 
 label.highlight {
+  display: none;
   color: #ffffff;
 }
 
@@ -170,4 +201,13 @@ textarea {
 .forgot {
   margin-top: -10px;
   text-align: right;
+}
+.text-xs-center {
+  text-align: -webkit-center; 
+  padding: 10px;
+}
+
+.g-recaptcha {
+  display: inline-block;
+  margin: 0px auto;
 }
