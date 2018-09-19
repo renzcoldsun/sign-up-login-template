@@ -1,0 +1,61 @@
+diff --git a/admin/application/config/config.php b/admin/application/config/config.php
+index 1031522..556c3cd 100644
+--- a/admin/application/config/config.php
++++ b/admin/application/config/config.php
+@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
+ | a PHP script and you can easily do that on your own.
+ |
+ */
+-$config['base_url'] = '';
++$config['base_url'] = 'http://localhost:8000/bvzlogin/admin';
+ 
+ /*
+ |--------------------------------------------------------------------------
+@@ -432,7 +432,7 @@ $config['standardize_newlines'] = FALSE;
+ |          for backwards compatibility purposes!
+ |
+ */
+-$config['global_xss_filtering'] = FALSE;
++$config['global_xss_filtering'] = TRUE;
+ 
+ /*
+ |--------------------------------------------------------------------------
+diff --git a/admin/application/config/database.php b/admin/application/config/database.php
+index d22321e..9c4e4b0 100644
+--- a/admin/application/config/database.php
++++ b/admin/application/config/database.php
+@@ -76,9 +76,9 @@ $query_builder = TRUE;
+ $db['default'] = array(
+ 	'dsn'	=> '',
+ 	'hostname' => 'localhost',
+-	'username' => '',
+-	'password' => '',
+-	'database' => '',
++	'username' => 'imtrader',
++	'password' => 'Stomata1968@',
++	'database' => 'dlpclientdatabase',
+ 	'dbdriver' => 'mysqli',
+ 	'dbprefix' => '',
+ 	'pconnect' => FALSE,
+diff --git a/admin/application/config/routes.php b/admin/application/config/routes.php
+index 1b45740..324a43c 100644
+--- a/admin/application/config/routes.php
++++ b/admin/application/config/routes.php
+@@ -49,6 +49,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
+ | Examples:	my-controller/index	-> my_controller/index
+ |		my-controller/my-method	-> my_controller/my_method
+ */
+-$route['default_controller'] = 'welcome';
++$route['default_controller'] = 'admin';
+ $route['404_override'] = '';
+ $route['translate_uri_dashes'] = FALSE;
+diff --git a/dashboard.php b/dashboard.php
+index 083ee02..59bb745 100644
+--- a/dashboard.php
++++ b/dashboard.php
+@@ -11,4 +11,4 @@ if(isset($action)) {
+         doSaveProfile();
+     }
+ }
+-include_once("admin/dashboard.inc.php");
++include_once("dashboard.inc.php");

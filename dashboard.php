@@ -11,4 +11,6 @@ if(isset($action)) {
         doSaveProfile();
     }
 }
-include_once("admin/dashboard.inc.php");
+global $mySessionKey;
+$form_data = $_SESSION[$mySessionKey]["row_data"];
+include_once("dashboard.inc.php");

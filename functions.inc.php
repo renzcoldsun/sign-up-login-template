@@ -8,8 +8,8 @@ require 'vendor/autoload.php';
 
 if(!defined('tAccess')) die("Unable to continue, direct access not allowed");
 include_once("config.inc.php");
-global $mySessionKey;
 $mySessionKey = 'MBxS}W8wW1yyyMc+g]gf>WhZ#w+U:c';
+global $mySessionKey;
 
 foreach($_GET as $key => $value)
 {
@@ -298,8 +298,8 @@ function doSaveProfile() {
     $sql .= "usage_of_funds='" . $usage_of_funds . "',";
     $sql .= "employer='" . $employer . "',";
     $sql .= "ss_id_number='" . $ss_id_number . "',";
-    $sql .= "account_number='" . $account_number . "',";
-    $sql .= "domain='" . $domain . "' ";
+    # $sql .= "account_number='" . $account_number . "',";
+    # $sql .= "domain='" . $domain . "' ";
     $sql .= "WHERE username='" . $username . "';";
     $db = connectDB();
     if($stmt = $db->prepare($sql)) {
@@ -317,4 +317,15 @@ function doSaveProfile() {
         global $$key;
         $_SESSION[$mySessionKey]["row_data"][$key] = $$key;
     }
+}
+
+function titleCase($title) {
+    $title = preg_replace("/[_]+/", " ", $title);
+    return ucwords($title);
+}
+
+function fieldDisabled($title) {
+    if($title == "username") return "disabled=\"disabled\"";
+    if($title == "account_number") return "disabled=\"disabled\"";
+    if($title == "domain") return "disabled=\"disabled\"";
 }
