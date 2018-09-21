@@ -7,10 +7,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>DLPTrade Profile</title>
-        <link type="text/css" href="admin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link type="text/css" href="admin/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link type="text/css" href="admin/css/theme.css" rel="stylesheet">
-        <link type="text/css" href="admin/images/icons/css/font-awesome.css" rel="stylesheet">
+        <link type="text/css" href="edmin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link type="text/css" href="edmin/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link type="text/css" href="edmin/css/theme.css" rel="stylesheet">
+        <link type="text/css" href="edmin/images/icons/css/font-awesome.css" rel="stylesheet">
         <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
             rel='stylesheet'>
     </head>
@@ -23,7 +23,7 @@
                     <div class="nav-collapse collapse navbar-inverse-collapse">
                         <ul class="nav pull-right">
                             <li class="nav-user dropdown"><a href="admin/#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="admin/images/user.png" class="nav-avatar" />
+                                <img src="edmin/images/user.png" class="nav-avatar" />
                                 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="dashboard.php">Your Profile</a></li>
