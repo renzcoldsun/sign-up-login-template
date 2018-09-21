@@ -100,7 +100,6 @@ class AuthLib {
             if($errors == NULL) $errors = Array();
             $errors[] = "Username / Email Invalid";
             $this->CI->session->set_flashdata("login_errors", $errors);
-            die(print_r($errors));
             redirect($this->login_page);
         }
         $secret = $login_data["secret"];
@@ -111,7 +110,6 @@ class AuthLib {
             if($errors == NULL) $errors = Array();
             $errors[] = "Algorithm Error Please See Developer";
             $this->CI->session->set_flashdata("login_errors", $errors);
-            die(print_r($errors));
             redirect($this->login_page);
         }
         if($hashed_key != $secret) {
@@ -119,7 +117,6 @@ class AuthLib {
             if($errors == NULL) $errors = Array();
             $errors[] = "Username / Email Invalid";
             $this->CI->session->set_flashdata("login_errors", $errors);
-            die(print_r($errors));
             redirect($this->login_page);
         }
 
