@@ -24,6 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = 'http://localhost:8000/bvzlogin/admin';
+if(file_exists("/var/www/html/index.php")) {
+    $config['base_url'] = 'http://70.113.16.128/admin';
+}
 
 /*
 |--------------------------------------------------------------------------
