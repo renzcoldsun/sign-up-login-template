@@ -42,6 +42,4 @@ class Auth_model extends CI_Model {
         $this->db->where("id", $this->id);
         $this->db->update($this->table_name);
     }
-
-
 }

@@ -1,0 +1,16 @@
+<script src="<?php echo base_url() ?>assets/scripts/jquery-3.3.1.js"></script>
+<script src="<?php echo base_url() ?>assets/scripts/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  $('#usersTable').DataTable({
+        columnDefs: [ {
+            targets: [ 0 ],
+            orderData: [ 0, 1 ]
+        }, {
+            targets: [ 1 ],
+            orderData: [ 1, 0 ]
+        }, ]
+    } );
+});
+</script>

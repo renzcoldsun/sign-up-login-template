@@ -24,10 +24,23 @@ class MY_Controller extends CI_Controller {
         return $contents;
     }
 
+    public function set_error($key, $value) {
+        
+    }
+
     public function getUsername() {
         $username = "UNAUTH USER";
         $this->load->library('authlib');
         $username = $this->authlib->get_session_var('username');
         return $username;
+    }
+
+    public function navActive($url) {
+        $this->load->helper('url');
+        $currentURL = current_url(); //for simple URL
+        $params = $_SERVER['QUERY_STRING']; //for parameters
+        $fullURL = $currentURL . '?' . $params; //full URL with parameter
+        if(site_url($url) == current_url()) return 'class="active"';
+        return "";
     }
 }

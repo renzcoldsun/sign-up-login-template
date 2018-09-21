@@ -14,6 +14,7 @@ $CI =& get_instance();
 	<link rel="stylesheet" href="<?php echo base_url() ?>assets/vendor/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" href="<?php echo base_url() ?>assets/vendor/linearicons/style.css">
 	<link rel="stylesheet" href="<?php echo base_url() ?>assets/vendor/chartist/css/chartist-custom.css">
+	<?php echo isset($header_content) ? $header_content : "" ?>
 	<!-- MAIN CSS -->
 	<link rel="stylesheet" href="<?php echo base_url() ?>assets/css/main.css">
 	<!-- GOOGLE FONTS -->
@@ -54,8 +55,9 @@ $CI =& get_instance();
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav">
-							<li><a href="<?php echo site_url("admin/index") ?>" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-						</ul>
+							<li><a href="<?php echo site_url("admin/index") ?>" <?php echo $CI->navActive("admin/index") ?>><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+							<li><a href="<?php echo site_url("admin/server_details/list") ?>" <?php echo $CI->navActive("admin/server_details/list") ?>><i class="lnr lnr-dice"></i><span>Server Details</span></a></li>
+					</ul>
 				</nav>
 			</div>
 		</div>
@@ -63,6 +65,8 @@ $CI =& get_instance();
 		<!-- MAIN -->
 		<div class="main">
 			<!-- MAIN CONTENT -->
+			<!-- add flashes -->
+			<!-- add flashes-->
 			<div class="main-content">
                 <?php if(isset($content)) echo $content; ?>
 			</div>
@@ -80,10 +84,7 @@ $CI =& get_instance();
 	<!-- Javascript -->
 	<script src="<?php echo base_url() ?>assets/vendor/jquery/jquery.min.js"></script>
 	<script src="<?php echo base_url() ?>assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script src="<?php echo base_url() ?>assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="<?php echo base_url() ?>assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js"></script>
-	<script src="<?php echo base_url() ?>assets/vendor/chartist/js/chartist.min.js"></script>
-	<script src="<?php echo base_url() ?>assets/scripts/klorofil-common.js"></script>
+	<?php echo isset($footer_content) ? $footer_content : "" ?>
 </body>
 
 </html>
