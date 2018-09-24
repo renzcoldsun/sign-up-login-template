@@ -148,15 +148,22 @@ function signup_save() {
     $domain_id = 1;
 
     # get the account nnumber
-    $sql = "SELECT MAX(account_number) as max_account_number FROM dlpclienttable";
-    if($query = $db->query($sql)) {
-        while($row = $query->fetch_assoc()) {
-            $account_number = (int) $row["max_account_number"];
+    $user_count = 0;
+    while(true)
+    {
+        $db = connectDB();
+        $sql = "SELECT count(*) as user_count FROM dlpclienttable WHERE account_number = " . ((int) $account_number);
+        if($query = $db->query($sql)) {
+            while($row = $query->fetch_assoc()) {
+                $user_count = (int) $row["user_count"];
+            }
+            if($user_count <= 0) break;
+            $account_number++;
+        } else {
+            break;
         }
-        if($account_number < 1000) $account_number = 1000;
-        else $account_number++;
+        $db->close();
     }
-    $db->close();
 
     # get the domain
     $db = connectDB();
