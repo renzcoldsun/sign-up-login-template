@@ -144,10 +144,11 @@ function signup_save() {
     global $mySessionKey;
     $db = connectDB();
     if($db == NULL) die("Cannot continue");
-    global $username, $phone_number, $password, $email, $first_name, $last_name, $messages;
+    global $phone_number, $password, $email, $first_name, $last_name, $messages;
     $account_number = 1000;
     $domain = 'DLPT$TRIAL1$';
     $domain_id = 1;
+
 
     # get the account nnumber
     $user_count = 0;
@@ -186,16 +187,23 @@ function signup_save() {
     $db->close();
 
     $db = connectDB();
-    $sql = 'INSERT INTO dlpclienttable(phone_number, `password`, email, first_name, last_name, account_number, domain) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    if($stmt = $db->prepare($sql)) {
-        $stmt->bind_param("sssssss", $phone_number,$password,$email, $first_name,$last_name,$account_number,$domain);
-        $result = $stmt->execute();
-        if($result)
-            $messages["success"][] = "User created";
+    if(method_exists($db, 'prepare')) {
+        $sql = 'INSERT INTO dlpclienttable(phone_number, `password`, email, first_name, last_name, account_number, domain) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        if($stmt = $db->prepare($sql)) {
+            $stmt->bind_param("sssssss", $phone_number,$password,$email, $first_name,$last_name,$account_number,$domain);
+            $result = $stmt->execute();
+            echo $stmt->error;
+            if($result) {
+                $messages["success"][] = "User created";
+            }
+            if(mysqli_connect_errno()) {
+                die("Database error" . mysqli_connect_errno() );
+            }
+        }
+        $db->close();
     }
-    $db->close();
     $_SESSION[$mySessionKey] = Array();
-    $_SESSION[$mySessionKey]["username"] = $username;
+    $_SESSION[$mySessionKey]["username"] = $email;
     doNotify();
     doSignIn();
 }
@@ -204,8 +212,8 @@ function doNotify() {
     // $_SESSION[$mySessionKey]["row_data"] still not here since doSignIn() is not yet
     // called
     global $username, $email;
-    if($username == "" || $username == NULL) return NULL;
-    if($email == "" || $email == "") return NNULL;
+    # if($username == "" || $username == NULL) return NULL;
+    if($email == "" || $email == "") return NULL;
     $mail = new PHPMailer();
     $mail->IsSMTP();
     $mail->SMTPDebug = 0;
@@ -232,16 +240,14 @@ EoFdOnOtCoPy;
     $mail->AddAddress($email);
     if(!$mail->Send()) {
         die($mail->ErrorInfo);
-    } else {
-        echo "Message Sent";
-    }
-    
+    } 
 }
 
 /** SIGNIN ROUTINES **/
 function doSignIn() {
-    global $email, $password, $messages, $mySessionKey;
+    global $username, $email, $password, $messages, $mySessionKey;
     $users = check_rows('email', $email, true, true);
+    unset($_SESSION[$mySessionKey]);
     if(count($users) != 1) 
     {
         $messages["login_errors"][] = "Username does not exist";
@@ -256,11 +262,12 @@ function doSignIn() {
             }
         }
         if($passed) {
-            $_SESSION[$mySessionKey]["username"] = $username;
+            $_SESSION[$mySessionKey]["username"] = $row_data["email"];
             $row_data["password"] = "BLURRED";
             $_SESSION[$mySessionKey]["row_data"] = $row_data;
             header("location:index.php");
         } else {
+            unset($_SESSION[$mySessionKey]);
             $messages["login_errors"][] = "Password failed";
         }
     }
@@ -268,7 +275,7 @@ function doSignIn() {
 
 function doAuth() {
     global $mySessionKey;
-    if(isset($_SESSION[$mySessionKey])) {
+    if(isset($_SESSION[$mySessionKey]) && (isset($_SESSION[$mySessionKey]["username"]) && $_SESSION[$mySessionKey]["username"] != NULL)) {
         // we are supposed to be logged in.
         if(!defined('dAccess')) {
             // we should be in the dashboard
@@ -334,7 +341,7 @@ function titleCase($title) {
 }
 
 function fieldDisabled($title) {
-    if($title == "username") return "disabled=\"disabled\"";
+    if($title == "email") return "disabled=\"disabled\"";
     if($title == "account_number") return "disabled=\"disabled\"";
     if($title == "domain") return "disabled=\"disabled\"";
 }

@@ -32,24 +32,26 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 				<h2 class="success"><?php echo $success ?></h2>
 				<?php endforeach; ?>
 				<form action="index.php" method="post">
-				<input type="hidden" name="action" value="signup" />
-				<div class="field-wrap">
+					<input type="hidden" name="action" value="signup" />
+					<!--
+					<div class="field-wrap">
 						<label>Username<span class="req">*</span>
 						</label>
 						<input type="text" name="username" id="id_username" required autocomplete="off" value="<?php echo $username ?>" />
 						<?php if(showPageErrors('signup_username') != ""): ?><div class="field_error" ><?php echo showPageErrors('signup_username') ?></div><?php endif; ?>
+					</div>
+					-->
+					<div class="field-wrap">
+						<label>Email Address<span class="req">*</span>
+						</label>
+						<input type="text" name="email" id="id_email" required autocomplete="off" value="<?php echo $email ?>"/>
+						<?php if(showPageErrors('signup_email') != ""): ?><div class="field_error" ><?php echo showPageErrors('signup_email') ?></div><?php endif; ?>
 					</div>
 					<div class="field-wrap">
 						<label>Phone Number<span class="req">*</span>
 						</label>
 						<input type="text" name="phone_number" id="id_phone_number" required autocomplete="off" value="<?php echo $phone_number ?>" />
 						<?php if(showPageErrors('signup_phone_number') != ""): ?><div class="field_error" ><?php echo showPageErrors('signup_phone_number') ?></div><?php endif; ?>
-					</div>
-					<div class="field-wrap">
-						<label>Email Address<span class="req">*</span>
-						</label>
-						<input type="text" name="email" id="id_email" required autocomplete="off" value="<?php echo $email ?>"/>
-						<?php if(showPageErrors('signup_email') != ""): ?><div class="field_error" ><?php echo showPageErrors('signup_email') ?></div><?php endif; ?>
 					</div>
 					<div class="field-wrap">
 						<label>Set A Password<span class="req">*</span>
@@ -82,9 +84,9 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 				<form action="index.php" method="post">
 					<input type="hidden" name="action" value="signin" />
 					<div class="field-wrap">
-						<label>Username<span class="req">*</span>
+						<label>Email Address<span class="req">*</span>
 						</label>
-						<input type="text" name="username" id="login_username" value="<?php echo $username ?>" required autocomplete="off" />
+						<input type="text" name="email" id="login_username" value="<?php echo $email ?>" required autocomplete="off" />
 					</div>
 					<div class="field-wrap">
 						<label>Password<span class="req">*</span>

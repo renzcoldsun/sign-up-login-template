@@ -22,7 +22,7 @@
                         <i class="icon-reorder shaded"></i></a><a class="brand" href="index.php">DLPTrade</a>
                     <div class="nav-collapse collapse navbar-inverse-collapse">
                         <ul class="nav pull-right">
-                            <li class="nav-user dropdown"><a href="admin/#" class="dropdown-toggle" data-toggle="dropdown">
+                            <li class="nav-user dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="edmin/images/user.png" class="nav-avatar" />
                                 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -63,24 +63,27 @@
                                     <h3>User Profile</h3>
                                 </div>
                                 <div class="module-body">
+                                    <?php if(isset($messages["warning"])) { ?>
                                     <?php foreach($messages["warning"] as $warning ) { ?>
                                     <div class="alert">
                                         <button type="button" class="close" data-dismiss="alert">×</button>
                                         <strong>Warning!</strong> <?php echo $warning ?>
                                     </div>
-                                    <?php } ?>
+                                    <?php } } ?>
+                                    <?php if(isset($messages["alert"])) { ?>
                                     <?php foreach($messages["alert"] as $alert ) { ?>
                                     <div class="alert alert-error">
                                         <button type="button" class="close" data-dismiss="alert">×</button>
                                         <strong>Alert!</strong> <?php echo $alert ?>
                                     </div>
-                                    <?php } ?>
+                                    <?php } } ?>
+                                    <?php if(isset($messages["success"])) { ?>
                                     <?php foreach($messages["success"] as $success ) { ?>
                                     <div class="alert alert-success">
                                         <button type="button" class="close" data-dismiss="alert">×</button>
                                         <strong>Success!</strong> <?php echo $success ?>
                                     </div>
-                                    <?php } ?>
+                                    <?php } } ?>
                                     <br /><!-- spacer -->
 
                                     <form class="form-horizontal row-fluid" action="dashboard.php" method="post">

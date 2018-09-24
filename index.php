@@ -10,8 +10,11 @@ doAuth();
 if(isset($action)) {
     $action = strtolower($action);
     if($action == "signup") {
-        if(signup_sanitize())
+        # die("Signup");
+        if(signup_sanitize()) {
+            # die("Sanitized");
             signup_save();
+        }
     }
     if($action == "signin") {
         doSignIn();
