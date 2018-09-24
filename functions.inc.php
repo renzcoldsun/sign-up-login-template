@@ -79,11 +79,13 @@ function verifyCaptcha($captchaValue="") {
 function signup_sanitize() {
     $result = true;
     global $username, $phone_number, $password, $email, $first_name, $last_name, $messages, $page_errors;
+    /*
     if(check_rows('username', $username, true)) {
         $result = false;
         $messages["errors"][] = "Username is already taken: " . $username;
         $page_errors["signup_username"] = "Username is already taken: " . $username;
     }
+    */
     /*
     if(check_rows('phone_number', $phone_number, true)) {
         $result = false;
@@ -184,9 +186,9 @@ function signup_save() {
     $db->close();
 
     $db = connectDB();
-    $sql = 'INSERT INTO dlpclienttable(username, phone_number, `password`, email, first_name, last_name, account_number, domain) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO dlpclienttable(phone_number, `password`, email, first_name, last_name, account_number, domain) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     if($stmt = $db->prepare($sql)) {
-        $stmt->bind_param("ssssssss", $username, $phone_number,$password,$email, $first_name,$last_name,$account_number,$domain);
+        $stmt->bind_param("sssssss", $phone_number,$password,$email, $first_name,$last_name,$account_number,$domain);
         $result = $stmt->execute();
         if($result)
             $messages["success"][] = "User created";
@@ -238,8 +240,8 @@ EoFdOnOtCoPy;
 
 /** SIGNIN ROUTINES **/
 function doSignIn() {
-    global $username, $password, $messages, $mySessionKey;
-    $users = check_rows('username', $username, true, true);
+    global $email, $password, $messages, $mySessionKey;
+    $users = check_rows('email', $email, true, true);
     if(count($users) != 1) 
     {
         $messages["login_errors"][] = "Username does not exist";
@@ -299,7 +301,7 @@ function doSaveProfile() {
     $sql .= "city='" . $city . "',";
     $sql .= "state='" . $state . "',";
     $sql .= "zip_code='" . $zip_code . "',";
-    $sql .= "email='" . $email . "',";
+    # $sql .= "email='" . $email . "',";
     $sql .= "occupation='" . $occupation . "',";
     $sql .= "source_of_funds='" . $source_of_funds . "',";
     $sql .= "usage_of_funds='" . $usage_of_funds . "',";
@@ -307,7 +309,7 @@ function doSaveProfile() {
     $sql .= "ss_id_number='" . $ss_id_number . "',";
     # $sql .= "account_number='" . $account_number . "',";
     # $sql .= "domain='" . $domain . "' ";
-    $sql .= "WHERE username='" . $username . "';";
+    $sql .= "WHERE email='" . $email . "';";
     $db = connectDB();
     if($stmt = $db->prepare($sql)) {
         $result = $stmt->execute();
