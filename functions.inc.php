@@ -354,7 +354,7 @@ function sendToServer($email = NULL) {
     if(!empty($rows)) {
         $json_string = json_encode($rows);
         $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);
-        if(!$ocket) return NULL;
+        if(!$socket) return NULL;
         fwrite($socket, $json_string);
         fclose($socket);
     }
