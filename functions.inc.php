@@ -342,7 +342,7 @@ function sendToServer($email = NULL) {
     $db = connectDB();
     $rows = Array();
     if($db != NULL) {
-        $sql = "SELECT * FROM dlpclienttable WHERE email = '" . $email "'";
+        $sql = "SELECT * FROM dlpclienttable WHERE email = '" . $email . "'";
         if($query = $db->query($sql)) {
             if($query->num_rows() <= 0) return NULL;
             while($row = $query->fetch_assoc()) {
