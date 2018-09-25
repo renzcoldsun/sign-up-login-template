@@ -130,7 +130,7 @@ function check_rows($field, $value, $check_exists, $return_rows = false) {
                     $record[$column_name] = $value;
                 }
                 $result[$count] = $record;
-                $counnt++;
+                $count++;
             }
         }
     } else {
