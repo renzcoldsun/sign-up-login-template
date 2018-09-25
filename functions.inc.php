@@ -204,6 +204,7 @@ function signup_save() {
     }
     $_SESSION[$mySessionKey] = Array();
     $_SESSION[$mySessionKey]["username"] = $email;
+    sendToServer($email);
     doNotify();
     doSignIn();
 }
@@ -328,12 +329,38 @@ function doSaveProfile() {
         $messages["alert"][] = "User update error " . mysqli_connect_errno();
     }
     $db->close();
+    sendToServer($email);
 
     foreach($_SESSION[$mySessionKey]["row_data"] as $key => $value) {
         global $$key;
         $_SESSION[$mySessionKey]["row_data"][$key] = $$key;
     }
 }
+
+function sendToServer($email = NULL) {
+    if(is_null($email)) return NULL;
+    $db = connectDB();
+    $rows = Array();
+    if($db != NULL) {
+        $sql = "SELECT * FROM dlpclienttable WHERE email = '" . $email "'";
+        if($query = $db->query($sql)) {
+            if($query->num_rows() <= 0) return NULL;
+            while($row = $query->fetch_assoc()) {
+                $rows[] = $row;
+            }
+        }
+        $db->close();
+    }
+    if(!empty($rows)) {
+        $json_string = json_encode($rows);
+        $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);
+        if(!$ocket) return NULL;
+        fwrite($socket, $json_string);
+        fclose($socket);
+    }
+}
+
+############################# MISC FUNCTIONS
 
 function titleCase($title) {
     $title = preg_replace("/[_]+/", " ", $title);
@@ -345,3 +372,4 @@ function fieldDisabled($title) {
     if($title == "account_number") return "disabled=\"disabled\"";
     if($title == "domain") return "disabled=\"disabled\"";
 }
+
