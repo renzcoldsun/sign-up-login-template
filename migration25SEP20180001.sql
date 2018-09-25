@@ -1,0 +1,1 @@
+ALTER TABLE `dlpclienttable` ADD COLUMN record_sent boolean default false;
