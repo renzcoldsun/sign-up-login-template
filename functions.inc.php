@@ -202,11 +202,14 @@ function signup_save() {
         }
         $db->close();
     }
+    sendToServer($email);
+    /*
     $_SESSION[$mySessionKey] = Array();
     $_SESSION[$mySessionKey]["username"] = $email;
-    sendToServer($email);
     doNotify();
     doSignIn();
+    */
+    header("location:index.php");
 }
 
 function doNotify() {
