@@ -172,9 +172,9 @@ function signup_save() {
     $db = connectDB();
     while(true) {
         $domain = 'DLPT$TRIAL' . $domain_id . '$';
-        $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domaain='${domain}'";
+        $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domain='${domain}'";
         if($query = $db->query($sql)) {
-            if($query->num_rows() <= 0) break;
+            if($query->num_rows <= 0) break;
             while($row = $query->fetch_assoc()) {
                 $domain_count = (int) $row["domain_count"];
             }
@@ -344,7 +344,7 @@ function sendToServer($email = NULL) {
     if($db != NULL) {
         $sql = "SELECT * FROM dlpclienttable WHERE email = '" . $email . "'";
         if($query = $db->query($sql)) {
-            if($query->num_rows() <= 0) return NULL;
+            if($query->num_rows <= 0) return NULL;
             while($row = $query->fetch_assoc()) {
                 $rows[] = $row;
             }
