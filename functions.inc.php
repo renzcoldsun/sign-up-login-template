@@ -252,28 +252,32 @@ function doSignIn() {
     global $username, $email, $password, $messages, $mySessionKey;
     $users = check_rows('email', $email, true, true);
     unset($_SESSION[$mySessionKey]);
-    if(count($users) != 1) 
-    {
-        $messages["login_errors"][] = "Username does not exist";
-    } else {
-        $passed = false;
-        $row_data = Array();
-        foreach($users as $row) {
-            if($password == $row["password"]) {
-                $passed = true;
-                $row_data = $row;
-                break;
+    if($password != null AND $password != "") {
+        if(count($users) != 1) 
+        {
+            $messages["login_errors"][] = "Username does not exist";
+        } else {
+            $passed = false;
+            $row_data = Array();
+            foreach($users as $row) {
+                if($password == $row["password"]) {
+                    $passed = true;
+                    $row_data = $row;
+                    break;
+                }
+            }
+            if($passed) {
+                $_SESSION[$mySessionKey]["username"] = $row_data["email"];
+                $row_data["password"] = "BLURRED";
+                $_SESSION[$mySessionKey]["row_data"] = $row_data;
+                header("location:index.php");
+            } else {
+                unset($_SESSION[$mySessionKey]);
+                $messages["login_errors"][] = "Password failed";
             }
         }
-        if($passed) {
-            $_SESSION[$mySessionKey]["username"] = $row_data["email"];
-            $row_data["password"] = "BLURRED";
-            $_SESSION[$mySessionKey]["row_data"] = $row_data;
-            header("location:index.php");
-        } else {
-            unset($_SESSION[$mySessionKey]);
-            $messages["login_errors"][] = "Password failed";
-        }
+    } else {
+        $messages["login_errors"][] = NULL;
     }
 }
 
