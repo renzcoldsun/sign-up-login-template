@@ -358,6 +358,30 @@ function sendToServer($email = NULL) {
         }
         $db->close();
     }
+    // loop through each rows and add server details
+    foreach($rows as $id => $r) {
+        $domain = $row["domain"];
+        $db = connectDB();
+        if($db != NULL) {
+            $server_ip = "";
+            $server_port = "";
+            $server_type = "TRADE";
+            $sql = "SELECT * FROM dlpclientserverdetails WHERE domain='"  . $domain . "'";
+            if($query = $db->query($sql)) {
+                while($row = $query->fetch_assoc()) {
+                    $server_ip = $row["server_ip"];
+                    $server_port = $row["server_port"];
+                    $server_type = $row["server_type"];
+                }
+            }
+            $db->close();
+            $r["server_type"] = $server_type;
+            $r["server_ip"] = $server_ip;
+            $r["server_port"] = $server_port;
+        }
+        $rows[$id] = $r;
+    }
+
     if(!empty($rows)) {
         $json_string = json_encode($rows);
         $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);

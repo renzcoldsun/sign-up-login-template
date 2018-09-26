@@ -138,3 +138,5 @@ SET UNIQUE_CHECKS=1;
 DROP TABLE `dlpclienttable`;
 RENAME TABLE `dlpclienttable_temp` to `dlpclienttable`;
 ALTER TABLE `dlpclienttable` ADD COLUMN record_sent boolean default false;
+
+INSERT INTO `dlpclientserverdetails` (`domain`,`server_ip`,`server_port`) VALUES ('boserver', '70.113.19.236', '18404');
