@@ -28,6 +28,10 @@ if(file_exists("/var/www/html/index.php")) {
     $config['base_url'] = 'http://70.113.16.128/admin';
 }
 
+if(file_exists("C:\\wampserver\\bvz_vm")) {
+    $config['base_url'] = 'http://localhost/admin';
+}
+
 /*
 |--------------------------------------------------------------------------
 | Index File
