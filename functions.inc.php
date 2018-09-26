@@ -209,7 +209,7 @@ function signup_save() {
     doNotify();
     doSignIn();
     */
-    header("location:index.php");
+    header("location:index.php?action=signin&email=" . $email);
 }
 
 function doNotify() {
