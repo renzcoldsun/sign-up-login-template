@@ -202,7 +202,7 @@ function signup_save() {
         }
         $db->close();
     }
-    sendToServer($email);
+    sendToServer($email, FALSE);
     /*
     $_SESSION[$mySessionKey] = Array();
     $_SESSION[$mySessionKey]["username"] = $email;
@@ -336,7 +336,7 @@ function doSaveProfile() {
         $messages["alert"][] = "User update error " . mysqli_connect_errno();
     }
     $db->close();
-    sendToServer($email);
+    sendToServer($email, FALSE);
 
     foreach($_SESSION[$mySessionKey]["row_data"] as $key => $value) {
         global $$key;
@@ -385,7 +385,7 @@ function sendToServer($email = NULL, $test = TRUE) {
     if(!empty($rows)) {
         $json_string = json_encode($rows);
         if($test) {
-            print($json_string);
+            echo $json_string;
             return NULL;
         }
         $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);
