@@ -344,7 +344,7 @@ function doSaveProfile() {
     }
 }
 
-function sendToServer($email = NULL) {
+function sendToServer($email = NULL, $test = TRUE) {
     if(is_null($email)) return NULL;
     $db = connectDB();
     $rows = Array();
@@ -384,6 +384,10 @@ function sendToServer($email = NULL) {
 
     if(!empty($rows)) {
         $json_string = json_encode($rows);
+        if($test) {
+            print($json_string);
+            return NULL;
+        }
         $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);
         if(!$socket) return NULL;
         fwrite($socket, $json_string);
