@@ -360,13 +360,13 @@ function sendToServer($email = NULL, $test = TRUE) {
     }
     // loop through each rows and add server details
     foreach($rows as $id => $r) {
-        $domain = $row["domain"];
+        $domain = $r["domain"];
         $db = connectDB();
         if($db != NULL) {
             $server_ip = "";
             $server_port = "";
             $server_type = "TRADE";
-            $sql = "SELECT * FROM dlpclientserverdetails WHERE type='BOSERVER' domain='"  . $domain . "'";
+            $sql = "SELECT * FROM dlpclientserverdetails WHERE server_type='BOSERVER' AND domain='"  . $domain . "'";
             if($query = $db->query($sql)) {
                 while($row = $query->fetch_assoc()) {
                     $server_ip = $row["server_ip"];
