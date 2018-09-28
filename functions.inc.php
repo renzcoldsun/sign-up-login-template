@@ -366,7 +366,7 @@ function sendToServer($email = NULL) {
             $server_ip = "";
             $server_port = "";
             $server_type = "TRADE";
-            $sql = "SELECT * FROM dlpclientserverdetails WHERE domain='"  . $domain . "'";
+            $sql = "SELECT * FROM dlpclientserverdetails WHERE type='BOSERVER' domain='"  . $domain . "'";
             if($query = $db->query($sql)) {
                 while($row = $query->fetch_assoc()) {
                     $server_ip = $row["server_ip"];
