@@ -86,13 +86,11 @@ function signup_sanitize() {
         $page_errors["signup_username"] = "Username is already taken: " . $username;
     }
     */
-    /*
     if(check_rows('phone_number', $phone_number, true)) {
         $result = false;
         $messages["errors"][] = "Phone Number is already used: " . $phone_number;
         $page_errors["signup_phone_number"] = "Phone Number is already used: " . $phone_number;
     }
-    */
     if($email != "" && $email != NULL) {
         if(check_rows('email', $email, true)) {
             $result = false;
@@ -192,12 +190,13 @@ function signup_save() {
         if($stmt = $db->prepare($sql)) {
             $stmt->bind_param("sssssss", $phone_number,$password,$email, $first_name,$last_name,$account_number,$domain);
             $result = $stmt->execute();
-            echo $stmt->error;
-            if($result) {
-                $messages["success"][] = "User created";
-            }
+            #echo $stmt->error;
+            #if($result) {
+            #    $messages["success"][] = "User created";
+            #}
             if(mysqli_connect_errno()) {
-                die("Database error" . mysqli_connect_errno() );
+                # die("Database error" . mysqli_connect_errno() );
+                header("location:index.php?action=signin&email=" . $email);
             }
         }
         $db->close();
@@ -208,8 +207,48 @@ function signup_save() {
     $_SESSION[$mySessionKey]["username"] = $email;
     doNotify();
     doSignIn();
-    */
+    
+    /* COMMENTED OUT 01 OCT 2018
+       * AS WE ARE SUPPOSED TO GET MORE INFORMATION
     header("location:index.php?action=signin&email=" . $email);
+    */
+    if(isset($_SESSION[$mySessionKey . $email])) unset($_SESSION[$mySessionKey . $email]);
+    $_SESSION[$mySessionKey . $email] = Array();
+    # get the info again
+    $db = connectDB();
+    if(method_exists($db, 'query')) {
+        $sql = "SELECT * FROM dlpclienttable WHERE email = '" . $email . "'";
+        if($query = $db->query($sql)) {
+            while($row = $query->fetch_assoc) {
+                foreach($row as $field => $value) {
+                    $_SESSION[$mySessionKey . $email][$field] = $value;
+                }
+            }
+            $_SESSION[$mySessionKey . $email]["password"] = "BLURRED";
+        }
+        $db->close();
+    }
+    header("location:index.php?action=complete&email=" . $email);
+}
+
+function doComplete() {
+    global $email, $mySessionKey;
+    if($email == "" || $email == NULL) header("location:index.php?action=signin&email=");
+    # if(!isset($_SESSION[$mySessionKey . $email])) header("location:index.php?action=signin&email=" . $email);
+    if(strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" ) {
+        doSaveProfile(FALSE);
+        $messages["success"][] = "Profile Updated";
+    }
+    $rows = check_rows("email", $email, TRUE, TRUE);
+    foreach($rows as $row)
+        $values = $row;
+    unset($values["password"]);
+    unset($values["backoffice"]);
+    unset($values["record_sent"]);
+    unset($values["key1"]);
+    unset($values["key2"]);
+    $_SESSION[$mySessionKey . $email] = $values;
+    include_once("complete.inc.php");
 }
 
 function doNotify() {
@@ -230,14 +269,11 @@ function doNotify() {
     $mail->SetFrom(mailuser);
     $mail->Subject = "Signup Notification";
     $mail->Body =<<<EoFdOnOtCoPy
-Hi $username,
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla felis lacus, 
-mattis luctus dolor a, aliquet maximus ipsum. Suspendisse vel egestas eros.
-Cras tincidunt imperdiet commodo. Ut sit amet augue ornare, lobortis ipsum in, 
-pulvinar enim. Aliquam et ex quis ex tempor congue. In in feugiat orci. 
-Morbi ullamcorper nisl vitae arcu semper ultrices. 
-Vivamus aliquet molestie nunc non lobortis. 
+    Hi $username,
+
+You have been signed up. Please complete your information to continue.
+
 
 EoFdOnOtCoPy;
 
@@ -297,14 +333,21 @@ function doAuth() {
     }
 }
 
-function doSaveProfile() {
+function doSaveProfile($doRedirect = TRUE) {
     global $action;
     global $mySessionKey;
     global $messages;
-    $sql = "UPDATE dlpclienttable SET ";
     foreach($_SESSION[$mySessionKey]["row_data"] as $key => $value) {
         global $$key;        
     }
+    if($action == "complete") {
+        global $email;
+        foreach($_SESSION[$mySessionKey . $email] as $key => $value) {
+            global $$key;
+        }
+    }
+
+    $sql = "UPDATE dlpclienttable SET ";
     $sql .= "phone_number='" . $phone_number . "',";
     $sql .= "first_name='" . $first_name . "',";
     $sql .= "middle_name='" . $middle_name . "',";
@@ -321,7 +364,7 @@ function doSaveProfile() {
     $sql .= "source_of_funds='" . $source_of_funds . "',";
     $sql .= "usage_of_funds='" . $usage_of_funds . "',";
     $sql .= "employer='" . $employer . "',";
-    $sql .= "ss_id_number='" . $ss_id_number . "',";
+    $sql .= "ss_id_number='" . $ss_id_number . "'";
     # $sql .= "account_number='" . $account_number . "',";
     # $sql .= "domain='" . $domain . "' ";
     $sql .= "WHERE email='" . $email . "';";
@@ -336,11 +379,15 @@ function doSaveProfile() {
         $messages["alert"][] = "User update error " . mysqli_connect_errno();
     }
     $db->close();
+    // do not send to server 
     # sendToServer($email, FALSE);
 
-    foreach($_SESSION[$mySessionKey]["row_data"] as $key => $value) {
-        global $$key;
-        $_SESSION[$mySessionKey]["row_data"][$key] = $$key;
+    if($doRedirect) {
+        foreach($_SESSION[$mySessionKey]["row_data"] as $key => $value) {
+            global $$key;
+            $_SESSION[$mySessionKey]["row_data"][$key] = $$key;
+        }
+
     }
 }
 
@@ -413,5 +460,17 @@ function fieldDisabled($title) {
     if($title == "email") return "disabled=\"disabled\"";
     if($title == "account_number") return "disabled=\"disabled\"";
     if($title == "domain") return "disabled=\"disabled\"";
+}
+
+function fieldRequired($fieldName) {
+    switch(strtolower($fieldName)) {
+        case "email": return TRUE;;
+        case "phone_number": return TRUE;;
+        case "first_name": return TRUE;;
+        case "last_name": return TRUE;;
+        case "account_number": return TRUE;;
+        case "domain": return TRUE;;
+        default: return FALSE;;
+    }
 }
 

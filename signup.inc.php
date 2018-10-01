@@ -91,7 +91,7 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 					<div class="field-wrap">
 						<label>Password<span class="req">*</span>
 						</label>
-						<input type="password" name="password" id="login_username" required autocomplete="off" />
+						<input type="password" name="password" id="login_password" required autocomplete="off" />
 					</div>
 					<!-- <p class="forgot"><a href="#">Forgot Password?</a> -->
 					</p>
@@ -117,9 +117,11 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 			var thislabel = $("#" + fieldname).parent().children("label");
 			thislabel.css("transform", transform);
 		}
+		<?php if(array_key_exists("login_errors", $messages) AND $messages["login_errors"][0] != NULL) { ?>
+
 		$("#id_username").focus();
-		<?php if(isset($messages["login_errors"]) && count($messages["login_errors"]) > 0) { ?>
 		$("#signin_tab").click();
+
 		<?php } ?>
 	});
 	</script>

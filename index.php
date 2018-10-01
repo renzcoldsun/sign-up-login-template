@@ -15,9 +15,15 @@ if(isset($action)) {
             # die("Sanitized");
             signup_save();
         }
+        include_once('signup.inc.php');
     }
     if($action == "signin") {
         doSignIn();
+        include_once('signup.inc.php');
     }
+    if($action == "complete") {
+        doComplete();
+    }
+} else {
+    include_once('signup.inc.php');
 }
-include_once('signup.inc.php');
