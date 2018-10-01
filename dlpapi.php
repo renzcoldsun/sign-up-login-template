@@ -8,10 +8,12 @@ if(array_key_exists("username", $_POST) && array_key_exists("password", $_POST))
 }
 
 /** RENZ: REMOVE THESE ON THE PRODUCTION, TOO DANGEROUSE TO LEAVE BEHIND **/
+/** 01 OCT 2018 REMOVING GETs Moving to POSTs
 if(array_key_exists("username", $_GET) && array_key_exists("password", $_GET)) {
     $username = $_GET['username'];
     $password = $_GET['password'];
 }
+**/
 
 $data["username"] = $username;
 // $data["password"] = $password;
