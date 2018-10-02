@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -f "/opt/dlptrade/bg_updater_running" ]
+then
+    exit 0
+fi
+
+touch /opt/dlptrade/bg_updater_running
+php /var/www/html/.htsend_test.php
+rm -f /opt/dlptrade/bg_updater_running
+
