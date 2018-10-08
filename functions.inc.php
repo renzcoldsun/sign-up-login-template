@@ -436,11 +436,17 @@ function sendToServer($email = NULL, $test = TRUE) {
             echo $json_string;
             return NULL;
         }
+        $retries = 0;
         while(true)
         {
             $socket = fsockopen(websocket_host, websocket_port, $errno, $errstr, 1);
             if(!$socket) {
                 unset($socket);
+                $retries++;
+                if($retries >= 2) {
+                    echo "Tried connecting 3 times. All failed. Try again later";
+                    break;
+                }
                 continue;
             }
             fwrite($socket, $json_string);
