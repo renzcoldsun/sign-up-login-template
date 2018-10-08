@@ -445,6 +445,7 @@ function sendToServer($email = NULL, $test = TRUE) {
             }
             fwrite($socket, $json_string);
             stream_set_timeout($socket, 2);
+            echo "Sent :: " . $json_string . " :: \n";
             fclose($socket);
             $has_sent = TRUE;
             break;
