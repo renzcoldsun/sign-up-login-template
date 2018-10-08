@@ -392,7 +392,7 @@ function doSaveProfile($doRedirect = TRUE) {
 }
 
 function sendToServer($email = NULL, $test = TRUE) {
-    if(is_null($email)) return NULL;
+    if(is_null($email)) return FALSE;
     $db = connectDB();
     $rows = Array();
     if($db != NULL) {
@@ -429,6 +429,7 @@ function sendToServer($email = NULL, $test = TRUE) {
         $rows[$id] = $r;
     }
 
+    $has_sent = FALSE;
     if(!empty($rows)) {
         $json_string = json_encode($rows);
         if($test) {
@@ -443,10 +444,13 @@ function sendToServer($email = NULL, $test = TRUE) {
                 continue;
             }
             fwrite($socket, $json_string);
+            stream_set_timeout($socket, 2);
             fclose($socket);
+            $has_sent = TRUE;
             break;
         }
     }
+    return $has_sent;
 }
 
 ############################# MISC FUNCTIONS
