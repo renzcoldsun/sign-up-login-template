@@ -10,7 +10,7 @@ if(test) $sql = "SELECT email FROM dlpclienttable";
 if($query1 = $db->query($sql)) {
     while($row1 = $query1->fetch_assoc()) {
         $email = $row1["email"];
-        if(sendToServer($email, test))
+        if(sendToServer($email, $test))
             $accounts_sent[] = $email;
     }
 }
