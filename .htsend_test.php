@@ -6,7 +6,7 @@ $test = FALSE;
 $accounts_sent = Array();
 $db = connectDB();
 $sql = "SELECT email FROM dlpclienttable WHERE record_sent=false";
-if(test) $sql = "SELECT email FROM dlpclienttable";
+if($test) $sql = "SELECT email FROM dlpclienttable";
 if($query1 = $db->query($sql)) {
     while($row1 = $query1->fetch_assoc()) {
         $email = $row1["email"];
