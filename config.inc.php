@@ -13,7 +13,7 @@ define('catpcha_url', 'https://www.google.com/recaptcha/api/siteverify');
 # for sending details to other server
 define('websocket_host', '70.113.19.236'); # production do not use
 # define('websocket_host', '10.211.55.4');
-define('websocket_port', '23109');
+define('websocket_port', '23108');
 
 ### for php mailer
 define('mailhost', 'smtp.gmail.com');
