@@ -2,6 +2,11 @@
 define('tAccess', TRUE);
 include_once("functions.inc.php");
 $data = Array();
+if(array_key_exists("username", $_GET) && array_key_exists("password", $_GET)) {
+    $username = $_GET['username'];
+    $password = $_GET['password'];
+}
+
 if(array_key_exists("username", $_POST) && array_key_exists("password", $_POST)) {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -68,17 +73,20 @@ if($data["account_number"] == "") {
 if($data["account_number"] != "") {
     if($data["domain"] != "")
     {
-        $sql = "SELECT server_type, server_ip, server_port FROM dlpclientserverdetails WHERE domain = ?";
+        $sql = "SELECT server_type, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE domain = ?";
         $db = connectDB();
         if($stmt = $db->prepare($sql)) {
             $stmt->bind_param("s", $data["domain"]);
-            $stmt->bind_result($server_type, $server_ip, $server_port);
+            $stmt->bind_result($server_type, $server_ip, $server_port, $dns_name);
             $stmt->execute();
             $stmt->store_result();
             while($stmt->fetch()) {
                 $data["server_type"] = $server_type;
                 $data["server_ip"] = $server_ip;
                 $data["server_port"] = $server_port;
+                if($dns_name != NULL AND $dns_name != "") {
+                    $data["server_ip"] = $dns_name;
+                }
             }
             if(mysqli_connect_errno()) {
                 die("Database error" . mysqli_connect_errno() );
