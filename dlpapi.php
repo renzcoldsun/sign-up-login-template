@@ -81,9 +81,9 @@ if($data["account_number"] != "") {
             $stmt->execute();
             $stmt->store_result();
             while($stmt->fetch()) {
-                $data["_server_type"] = $server_type;
-                $data[$_server_type ."server_ip"] = $server_ip;
-                $data[$_server_type ."server_port"] = $server_port;
+                $data["server_type"] = $server_type;
+                $data[$_server_type ."_server_ip"] = $server_ip;
+                $data[$_server_type ."_server_port"] = $server_port;
                 if($dns_name != NULL AND $dns_name != "") {
                     $data[$_server_type ."server_ip"] = $dns_name;
                 }
