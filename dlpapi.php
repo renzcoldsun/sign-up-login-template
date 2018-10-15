@@ -73,7 +73,7 @@ if($data["account_number"] == "") {
 if($data["account_number"] != "") {
     if($data["domain"] != "")
     {
-        $sql = "SELECT server_type, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE domain = ?";
+        $sql = "SELECT server_type, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE domain = 'ALL' OR domain = ?";
         $db = connectDB();
         if($stmt = $db->prepare($sql)) {
             $stmt->bind_param("s", $data["domain"]);
@@ -81,11 +81,11 @@ if($data["account_number"] != "") {
             $stmt->execute();
             $stmt->store_result();
             while($stmt->fetch()) {
-                $data["server_type"] = $server_type;
-                $data["server_ip"] = $server_ip;
-                $data["server_port"] = $server_port;
+                $data["_server_type"] = $server_type;
+                $data[$_server_type ."server_ip"] = $server_ip;
+                $data[$_server_type ."server_port"] = $server_port;
                 if($dns_name != NULL AND $dns_name != "") {
-                    $data["server_ip"] = $dns_name;
+                    $data[$_server_type ."server_ip"] = $dns_name;
                 }
             }
             if(mysqli_connect_errno()) {
