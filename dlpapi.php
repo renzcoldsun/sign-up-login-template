@@ -85,7 +85,7 @@ if($data["account_number"] != "") {
                 $data[$server_type ."_server_ip"] = $server_ip;
                 $data[$server_type ."_server_port"] = $server_port;
                 if($dns_name != NULL AND $dns_name != "") {
-                    $data[$server_type ."server_ip"] = $dns_name;
+                    $data[$server_type ."_server_ip"] = $dns_name;
                 }
             }
             if(mysqli_connect_errno()) {
