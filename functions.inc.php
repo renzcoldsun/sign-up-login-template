@@ -433,15 +433,17 @@ function sendToServer($email = NULL, $test = TRUE) {
     $db = connectDB();
     $servers = Array();
     // add this anyway since if we find this in the database, it will be overwritten
-    $servers[websocket_host] = websocket_port;
-    $server_added = true;
+    // $servers[websocket_host] = websocket_port;
+    $fin_websocket_host = websocket_host;
+    $fin_websocket_port = websocket_port;
     if($db != NULL) {
         $sql = "SELECT server_ip, server_port FROM `dlpclientserverdetails` WHERE server_type = 'CRYPTOSERVER'";
         if($query = $db->query($sql)) {
             while($row = $query->fetch_assoc()) {
                 $server_ip = trim($row["server_ip"]);
                 $server_port = trim($row["server_port"]);
-                $servers[$server_ip] = $server_port;
+                $fin_websocket_host = $server_ip;
+                $fin_websocket_port = $server_port;
             }
         }
     }
@@ -452,27 +454,25 @@ function sendToServer($email = NULL, $test = TRUE) {
             echo $json_string;
             return NULL;
         }
-        foreach($servers as $fin_websocket_host => $fin_websocket_port) {
-            $retries = 0;
-            while(true)
-            {
-                $socket = fsockopen($fin_websocket_host, $fin_websocket_port, $errno, $errstr, 1);
-                if(!$socket) {
-                    unset($socket);
-                    $retries++;
-                    if($retries >= 2) {
-                        echo "Tried connecting 3 times. All failed. Try again later";
-                        break;
-                    }
-                    continue;
+        $retries = 0;
+        while(true)
+        {
+            $socket = fsockopen($fin_websocket_host, $fin_websocket_port, $errno, $errstr, 1);
+            if(!$socket) {
+                unset($socket);
+                $retries++;
+                if($retries >= 2) {
+                    echo "Tried connecting 3 times. All failed. Try again later";
+                    break;
                 }
-                fwrite($socket, $json_string);
-                stream_set_timeout($socket, 2);
-                echo "Sent :: " . $json_string . " :: \n";
-                fclose($socket);
-                $has_sent = TRUE;
-                break;
+                continue;
             }
+            fwrite($socket, $json_string);
+            stream_set_timeout($socket, 2);
+            echo "Sent :: " . $json_string . " :: \n";
+            fclose($socket);
+            $has_sent = TRUE;
+            break;
         }
     }
     return $has_sent;
