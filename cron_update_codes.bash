@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATETIME=$(date '+%F-%H-%M-%S')
+DATETIME=$(date '+%F-%H-%M')
 LOGFILE="/var/log/bvz_cron_update-${DATETIME}"
 
 
