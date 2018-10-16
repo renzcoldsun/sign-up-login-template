@@ -4,7 +4,7 @@ DATETIME=$(date '+%F-%H-%M-%S')
 LOGFILE="/var/log/bvz_cron_update-${DATETIME}"
 
 
-exec >> ${LOGFILE}
+exec >> ${LOGFILE} 2>&1
 [[ -f "/var/.xxx_idfile" ]] && pushd /var/www/html
 git clean -f
 git reset --hard HEAD
