@@ -1,6 +1,6 @@
 <?php 
 session_start();
-
+header('Access-Control-Allow-Origin: *');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
