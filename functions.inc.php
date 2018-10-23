@@ -440,7 +440,7 @@ function sendToServer($email = NULL, $test = TRUE) {
     $fin_websocket_host = websocket_host;
     $fin_websocket_port = websocket_port;
     if($db != NULL) {
-        $sql = "SELECT server_ip, server_port, dns_name FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTO%'";
+        $sql = "SELECT server_ip, server_port, dns_name FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTODB'";
         if($query = $db->query($sql)) {
             while($row = $query->fetch_assoc()) {
                 $server_ip = trim($row["server_ip"]);
