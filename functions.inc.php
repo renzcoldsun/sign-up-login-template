@@ -412,6 +412,7 @@ function sendToServer($email = NULL, $test = TRUE) {
         if($db != NULL) {
             $server_ip = "";
             $server_port = "";
+            $dns_name = "";
             $server_type = "TRADE";
             $sql = "SELECT * FROM dlpclientserverdetails WHERE server_type='BOSERVER' AND domain='"  . $domain . "'";
             if($query = $db->query($sql)) {
@@ -419,12 +420,14 @@ function sendToServer($email = NULL, $test = TRUE) {
                     $server_ip = $row["server_ip"];
                     $server_port = $row["server_port"];
                     $server_type = $row["server_type"];
+                    $dns_name = $row["dns_name"];
                 }
             }
             $db->close();
             $r["server_type"] = $server_type;
             $r["server_ip"] = $server_ip;
             $r["server_port"] = $server_port;
+            $r["dns_name"] = $dns_name;
         }
         $rows[$id] = $r;
     }
