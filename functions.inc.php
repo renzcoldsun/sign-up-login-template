@@ -449,6 +449,7 @@ function sendToServer($email = NULL, $test = TRUE) {
                 if(trim($server_ip) == "") continue;
                 $fin_websocket_host = $server_ip;
                 $fin_websocket_port = $server_port;
+                break;
             }
         }
     }
