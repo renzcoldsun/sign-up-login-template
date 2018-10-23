@@ -437,11 +437,12 @@ function sendToServer($email = NULL, $test = TRUE) {
     $fin_websocket_host = websocket_host;
     $fin_websocket_port = websocket_port;
     if($db != NULL) {
-        $sql = "SELECT server_ip, server_port FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTO%'";
+        $sql = "SELECT server_ip, server_port, dns_name FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTO%'";
         if($query = $db->query($sql)) {
             while($row = $query->fetch_assoc()) {
                 $server_ip = trim($row["server_ip"]);
                 $server_port = trim($row["server_port"]);
+                if($server_ip == "") $server_ip = $row["dns_name"];
                 if(trim($server_ip) == "") continue;
                 $fin_websocket_host = $server_ip;
                 $fin_websocket_port = $server_port;
