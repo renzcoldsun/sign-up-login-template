@@ -464,6 +464,7 @@ function sendToServer($email = NULL, $test = TRUE) {
         {
             $socket = fsockopen($fin_websocket_host, $fin_websocket_port, $errno, $errstr, 1);
             if(!$socket) {
+                echo "Unable to connect to " . $fin_websocket_host . ":" . $fin_websocket_port . "\n";
                 unset($socket);
                 $retries++;
                 if($retries >= 2) {
