@@ -184,6 +184,29 @@ function signup_save() {
     }
     $db->close();
 
+    // ADDED 2018 October 26
+    // check if domain is signuplive.dlptrade.com
+    $server_name = strtolower($_SERVER['SERVER_NAME']);
+    if(preg_match("/signuplive\.dlptrade\.com/", $server_name)) {
+        $domain_id = 1;
+        $db = connectDB();
+        while(true) {
+            $domain = 'LIVEDEMO' . $domain_id . '$';
+            $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domain='${domain}'";
+            if($query = $db->query($sql)) {
+                if($query->num_rows <= 0) break;
+                while($row = $query->fetch_assoc()) {
+                    $domain_count = (int) $row["domain_count"];
+                }
+                if($domain_count <= 250) break;
+            } else {
+                break;
+            }
+            $domain_id++;
+        }
+        $db->close();
+    }
+
     $db = connectDB();
     if(method_exists($db, 'prepare')) {
         $sql = 'INSERT INTO dlpclienttable(phone_number, `password`, email, first_name, last_name, account_number, domain) VALUES (?, ?, ?, ?, ?, ?, ?)';
