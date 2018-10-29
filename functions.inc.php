@@ -487,8 +487,8 @@ function sendToServer($email = NULL, $test = TRUE) {
             
             $json_string = json_encode($data);
             if($test) {
-                echo $json_string;
-                return NULL;
+                echo "==== Sending ====\n" . $json_string . "\n === " . $fin_websocket_host . ":" . $fin_websocket_port . "=== \n\n";
+                continue;
             }
             $retries = 0;
             while(true)
