@@ -2,7 +2,7 @@
 define('tAccess', TRUE);
 include_once('config.inc.php');
 include_once('functions.inc.php');
-$test = TRUE;
+$test = FALSE;
 $accounts_sent = Array();
 $db = connectDB();
 $sql = "SELECT email FROM dlpclienttable WHERE record_sent=false";
