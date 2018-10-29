@@ -191,7 +191,7 @@ function signup_save() {
         $domain_id = 1;
         $db = connectDB();
         while(true) {
-            $domain = 'LIVEDEMO' . $domain_id . '$';
+            $domain = 'LIVEDEMO' . $domain_id;
             $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domain='${domain}'";
             if($query = $db->query($sql)) {
                 if($query->num_rows <= 0) break;
