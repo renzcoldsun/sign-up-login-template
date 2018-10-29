@@ -429,8 +429,10 @@ function sendToServer($email = NULL, $test = TRUE) {
         $db->close();
     }
     // loop through each rows and add server details
+    $toSend = Array();
     foreach($rows as $id => $r) {
         $domain = $r["domain"];
+        if(!array_key_exists($domain, $toSend)) $toSend[$domain] = Array();
         $db = connectDB();
         if($db != NULL) {
             $server_ip = "";
@@ -452,57 +454,63 @@ function sendToServer($email = NULL, $test = TRUE) {
             $r["server_port"] = $server_port;
             $r["dns_name"] = $dns_name;
         }
-        $rows[$id] = $r;
+        // $rows[$id] = $r;
+        $toSend[$domain][] = $r;
     }
 
     $has_sent = FALSE;
     $db = connectDB();
     $servers = Array();
-    // add this anyway since if we find this in the database, it will be overwritten
-    // $servers[websocket_host] = websocket_port;
-    $fin_websocket_host = websocket_host;
-    $fin_websocket_port = websocket_port;
-    if($db != NULL) {
-        $sql = "SELECT server_ip, server_port, dns_name FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTODB'";
-        if($query = $db->query($sql)) {
-            while($row = $query->fetch_assoc()) {
-                $server_ip = trim($row["server_ip"]);
-                $server_port = trim($row["server_port"]);
-                if($server_ip == "") $server_ip = $row["dns_name"];
-                if(trim($server_ip) == "") continue;
-                $fin_websocket_host = $server_ip;
-                $fin_websocket_port = $server_port;
+
+    if(!empty($toSend)) {
+        foreach($toSend as $domain => $data) {
+            // determine where to send
+
+            // add this anyway since if we find this in the database, it will be overwritten
+            // $servers[websocket_host] = websocket_port;
+            $fin_websocket_host = websocket_host;
+            $fin_websocket_port = websocket_port;
+            if($db != NULL) {
+                $sql = "SELECT server_ip, server_port, dns_name FROM `dlpclientserverdetails` WHERE server_type LIKE 'CRYPTODB' AND domain LIKE '%" . $domain . "%'";
+                if($query = $db->query($sql)) {
+                    while($row = $query->fetch_assoc()) {
+                        $server_ip = trim($row["server_ip"]);
+                        $server_port = trim($row["server_port"]);
+                        if($server_ip == "") $server_ip = $row["dns_name"];
+                        if(trim($server_ip) == "") continue;
+                        $fin_websocket_host = $server_ip;
+                        $fin_websocket_port = $server_port;
+                        break;
+                    }
+                }
+            }
+            
+            $json_string = json_encode($data);
+            if($test) {
+                echo $json_string;
+                return NULL;
+            }
+            $retries = 0;
+            while(true)
+            {
+                $socket = fsockopen($fin_websocket_host, $fin_websocket_port, $errno, $errstr, 1);
+                if(!$socket) {
+                    echo "Unable to connect to " . $fin_websocket_host . ":" . $fin_websocket_port . "\n";
+                    unset($socket);
+                    $retries++;
+                    if($retries >= 2) {
+                        echo "Tried connecting 3 times. All failed. Try again later";
+                        break;
+                    }
+                    continue;
+                }
+                fwrite($socket, $json_string);
+                stream_set_timeout($socket, 2);
+                echo "Sent :: " . $json_string . " :: \n";
+                fclose($socket);
+                $has_sent = TRUE;
                 break;
             }
-        }
-    }
-
-    if(!empty($rows)) {
-        $json_string = json_encode($rows);
-        if($test) {
-            echo $json_string;
-            return NULL;
-        }
-        $retries = 0;
-        while(true)
-        {
-            $socket = fsockopen($fin_websocket_host, $fin_websocket_port, $errno, $errstr, 1);
-            if(!$socket) {
-                echo "Unable to connect to " . $fin_websocket_host . ":" . $fin_websocket_port . "\n";
-                unset($socket);
-                $retries++;
-                if($retries >= 2) {
-                    echo "Tried connecting 3 times. All failed. Try again later";
-                    break;
-                }
-                continue;
-            }
-            fwrite($socket, $json_string);
-            stream_set_timeout($socket, 2);
-            echo "Sent :: " . $json_string . " :: \n";
-            fclose($socket);
-            $has_sent = TRUE;
-            break;
         }
     }
     return $has_sent;
