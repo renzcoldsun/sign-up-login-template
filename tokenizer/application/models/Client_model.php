@@ -32,6 +32,13 @@ class Client_model extends MY_Model {
     );
     public $id_field = "email";
     public $engine = "INNODB";
+    public $secure_fields = Array(
+        "email",
+        "key1",
+        "key2",
+        "account_number",
+        "domain"
+    );
 
     public function __construct() {
         parent::__construct();
@@ -45,13 +52,17 @@ class Client_model extends MY_Model {
         return false;
     }
 
-    public function getClientDetails($username = NULL) {
+    public function getClientDetails($username = NULL, $json = FALSE, $secure = FALSE) {
         $json_string = "";
         if($username == NULL) return $json_string;
         if($this->get($username, "email")) {
-            $retval = $this->results;
-            $json_string = json_encode($retval);
+            $retval = $this->results[0];
         }
-        return $json_string;
+        foreach($this->fields as $field => $desc) {
+            if(!in_array($field, $this->secure_fields)) unset($retval[$field]);
+        }
+        if($json) $json_string = json_encode($retval);
+        if ($json) return $json_string;
+        else return $retval;
     }
 }
