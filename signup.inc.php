@@ -70,6 +70,11 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 							<input type="text" name="last_name" id="id_last_name" required autocomplete="off" value="<?php echo $last_name ?>"/>
 						</div>
 					</div>
+					<div class="field-wrap">
+						<label>Domain (Leave empty if unsure)<span class="req">*</span>
+						</label>
+						<input type="text" name="domain" id="id_domain" autocomplete="off" value=""/>
+					</div>
 					<div class="text-xs-center">
 						<!-- <div class="g-recaptcha" id="g-recaptcha" data-sitekey="6LeUwW4UAAAAAGdK7FbRNHOVclbjv2vFBICVPxOi"></div> -->
 					</div>
@@ -111,8 +116,8 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 		{
 			var fieldname = fields[i];
 			if($("#" + fieldname).val() == "") continue; 
-			var transform = "translate(400px, 6px)";
-			if(fieldname == "id_first_name" || fieldname == "id_last_name")
+			var transform = "translate(300px, 6px)";
+			if(fieldname === "id_first_name" || fieldname == "id_last_name")
 			transform = "translate(150px, 6px)";
 			var thislabel = $("#" + fieldname).parent().children("label");
 			thislabel.css("transform", transform);

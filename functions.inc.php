@@ -142,11 +142,9 @@ function signup_save() {
     global $mySessionKey;
     $db = connectDB();
     if($db == NULL) die("Cannot continue");
-    global $phone_number, $password, $email, $first_name, $last_name, $messages;
+    global $phone_number, $password, $email, $first_name, $last_name, $messages, $domain;
     $account_number = 1000;
-    $domain = 'DLPT$TRIAL1$';
-    $domain_id = 1;
-
+    $domain = strtoupper(trim($domain));
 
     # get the account nnumber
     $user_count = 0;
@@ -167,22 +165,26 @@ function signup_save() {
     }
 
     # get the domain
-    $db = connectDB();
-    while(true) {
-        $domain = 'DLPT$TRIAL' . $domain_id . '$';
-        $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domain='${domain}'";
-        if($query = $db->query($sql)) {
-            if($query->num_rows <= 0) break;
-            while($row = $query->fetch_assoc()) {
-                $domain_count = (int) $row["domain_count"];
+    if($domain == "") {
+        $domain = 'DLPT$TRIAL1$';
+        $domain_id = 1;
+        $db = connectDB();
+        while(true) {
+            $domain = 'DLPT$TRIAL' . $domain_id . '$';
+            $sql = "SELECT count(*) AS domain_count FROM dlpclienttable WHERE domain='${domain}'";
+            if($query = $db->query($sql)) {
+                if($query->num_rows <= 0) break;
+                while($row = $query->fetch_assoc()) {
+                    $domain_count = (int) $row["domain_count"];
+                }
+                if($domain_count <= 250) break;
+            } else {
+                break;
             }
-            if($domain_count <= 250) break;
-        } else {
-            break;
+            $domain_id++;
         }
-        $domain_id++;
+        $db->close();
     }
-    $db->close();
 
     // ADDED 2018 October 26
     // check if domain is signuplive.dlptrade.com
