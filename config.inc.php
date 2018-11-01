@@ -22,6 +22,8 @@ define('mailsecure', 'tlz');
 define('mailuser', 'lsalmingo@salmingo.com');
 define('mailpass', '**TaNg4EVER::SALMINGO');
 
+define('DEBUG', FALSE);
+
 $page_errors = Array();
 $messages = Array();
 $messages["success"] = Array();

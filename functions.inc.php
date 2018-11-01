@@ -581,15 +581,15 @@ function get_or_create_token($username = "") {
     $db = connectDB();
     $u_id = "";
     if($stmt = $db->prepare($sql)) {
-        if(!$stmt->bind_param("s", $username)) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
-        if(!$stmt->execute()) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->bind_param("s", $username)) if(DEBUG) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->execute()) if(DEBUG) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
         $stmt->bind_result($unique_id);
         $stmt->store_result();
         while($stmt->fetch()) {
             $u_id = $unique_id;
         }
     } else {
-        echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+        if(DEBUG) echo "Prepare failed: (" . $db->errno . ") " . $db->error;
     }
     $db->close();
     if(!validateToken($u_id)) {
@@ -598,14 +598,14 @@ function get_or_create_token($username = "") {
         $db = connectDB();
         if(($stmt = $db->prepare($sql))) {
             if(!$stmt->bind_param("ss", $username, $uuid)) {
-                echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+                if(DEBUG) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
             }
             if($stmt->execute()) {
-                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                if(DEBUG) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             }
             $stmt->close();
         } else {
-            echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+            if(DEBUG) echo "Prepare failed: (" . $db->errno . ") " . $db->error;
         }
         $db->close();
         $unique_id = $uuid;
@@ -623,13 +623,13 @@ function validateToken($token) {
     $token_valid = FALSE;
     $time_stamp = "2012-01-01 00:00:00";
     if($stmt = $db->prepare($sql)) {
-        if(!$stmt->bind_param("s", $token)) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
-        if(!$stmt->execute()) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->bind_param("s", $token)) if(DEBUG) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->execute()) if(DEBUG) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
         $stmt->bind_result($id, $username, $time_stamp, $unique_id);
         $stmt->store_result();
         while($stmt->fetch()) {}
     } else {
-        echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+        if(DEBUG) echo "Prepare failed: (" . $db->errno . ") " . $db->error;
     }
     $db->close();
 
