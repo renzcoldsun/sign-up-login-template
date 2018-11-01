@@ -543,3 +543,102 @@ function fieldRequired($fieldName) {
     }
 }
 
+function gen_uuid() {
+    return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
+        // 32 bits for "time_low"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+        // 16 bits for "time_mid"
+        mt_rand( 0, 0xffff ),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 4
+        mt_rand( 0, 0x0fff ) | 0x4000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        mt_rand( 0, 0x3fff ) | 0x8000,
+
+        // 48 bits for "node"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+    );
+}
+
+function get_or_create_token($username = "") {
+    $username = trim($username);
+    $uuid = substr(gen_uuid(), 0, 16); // create toke just in case
+    $now = date('Y-m-d H:i:s');
+    $values = Array(
+        "id" => NULL,
+        "username" => $username,
+        "time_stamp" => $now,
+        "unique_id" => $uuid
+    );
+    // find the token for the username
+    $unique_id = "";
+    $sql = "SELECT unique_id FROM dlptoken where username=?";
+    $db = connectDB();
+    $u_id = "";
+    if($stmt = $db->prepare($sql)) {
+        if(!$stmt->bind_param("s", $username)) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->execute()) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        $stmt->bind_result($unique_id);
+        $stmt->store_result();
+        while($stmt->fetch()) {
+            $u_id = $unique_id;
+        }
+    } else {
+        echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+    }
+    $db->close();
+    if(!validateToken($u_id)) {
+        // create new token
+        $sql = "INSERT INTO dlptoken VALUES (NULL, ?, NOW(), ?);";
+        $db = connectDB();
+        if(($stmt = $db->prepare($sql))) {
+            if(!$stmt->bind_param("ss", $username, $uuid)) {
+                echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+            }
+            if($stmt->execute()) {
+                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            }
+            $stmt->close();
+        } else {
+            echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+        }
+        $db->close();
+        $unique_id = $uuid;
+    }
+
+    return $unique_id;
+}
+
+function validateToken($token) {
+    $expiry_hours = 12;
+    if($token == NULL) return FALSE;
+    // get the token from the database
+    $sql = "SELECT id,username,time_stamp,unique_id FROM dlptoken WHERE unique_id=?";
+    $db = connectDB();
+    $token_valid = FALSE;
+    $time_stamp = "2012-01-01 00:00:00";
+    if($stmt = $db->prepare($sql)) {
+        if(!$stmt->bind_param("s", $token)) echo "Binding failed: (" . $stmt->errno . ") " . $stmt->error;
+        if(!$stmt->execute()) echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        $stmt->bind_result($id, $username, $time_stamp, $unique_id);
+        $stmt->store_result();
+        while($stmt->fetch()) {}
+    } else {
+        echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+    }
+    $db->close();
+
+    $date = new DateTime();
+    $code_date = new DateTime($time_stamp);
+    $code_date->modify("+" . $expiry_hours . " hours");
+    return $date <= $code_date;
+}
+
+
+
+

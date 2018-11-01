@@ -1,6 +1,19 @@
 <?php
+ob_start();
 define('tAccess', TRUE);
 include_once("functions.inc.php");
+
+$cli = FALSE;
+if(defined('STDIN') )  {
+    if($argc !== 3) {
+        echo "Script requires two argumets: username and password";
+        exit(0);
+    }
+    $username = $argv[1];
+    $password = $argv[2];
+    $cli = TRUE;
+}
+
 $data = Array();
 if(array_key_exists("username", $_GET) && array_key_exists("password", $_GET)) {
     $username = $_GET['username'];
@@ -97,5 +110,12 @@ if($data["account_number"] != "") {
     }
 }
 
-header("Content-type: application/json");
+if($data["username"] != "") {
+    $token = get_or_create_token($data["username"]);
+    $data["token"] = $token;
+}
+
+if($cli)
+    header("Content-type: application/json");
 echo json_encode($data);
+ob_end_flush();
