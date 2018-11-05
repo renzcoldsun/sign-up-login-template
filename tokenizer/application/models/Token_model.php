@@ -20,6 +20,10 @@ class Token_model extends MY_Model {
         $this->memoryCheck();
     }
 
+    public function getExpiryString() {
+        return $this->expiry_hours . " hours";
+    }
+    
     public function getValidToken($username, $create = TRUE) {
         $this->username = $username;
         if($this->get($username, "username")) {

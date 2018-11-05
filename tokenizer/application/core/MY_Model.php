@@ -59,7 +59,7 @@ class MY_Model extends CI_Model {
         $query = $this->db->get($this->table_name);
         foreach($query->result() as $row) {
             $value = Array();
-            foreach($this->fields as $field) {
+            foreach($this->fields as $field => $field_desc) {
                 $value[$field] = $row->$field;
             }
             $returnvalue[] = $value;
