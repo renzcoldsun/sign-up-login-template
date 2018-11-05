@@ -198,6 +198,10 @@ textarea {
   width: 100%;
 }
 
+.button:disabled {
+  background: #c1bdba;
+}
+
 .forgot {
   margin-top: -10px;
   text-align: right;

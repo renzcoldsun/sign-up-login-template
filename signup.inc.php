@@ -33,6 +33,7 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 				<?php endforeach; ?>
 				<form action="index.php" method="post">
 					<input type="hidden" name="action" value="signup" />
+					<input type="hidden" name="captcha_value" id="id_captcha_valud" value="" />
 					<!--
 					<div class="field-wrap">
 						<label>Username<span class="req">*</span>
@@ -76,9 +77,9 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 						<input type="text" name="domain" id="id_domain" autocomplete="off" value=""/>
 					</div>
 					<div class="text-xs-center">
-						<!-- <div class="g-recaptcha" id="g-recaptcha" data-sitekey="6LeUwW4UAAAAAGdK7FbRNHOVclbjv2vFBICVPxOi"></div> -->
+						<div class="g-recaptcha" id="g-recaptcha" data-sitekey="6LeUwW4UAAAAAGdK7FbRNHOVclbjv2vFBICVPxOi" data-callback="data_callback"></div>
 					</div>
-					<button type="submit" class="button button-block" />Sign Up</button>
+					<button id="id_submit_button" type="submit" class="button button-block" disabled="disabled" />Sign Up</button>
 				</form>
 			</div>
 			<div id="login">
@@ -109,6 +110,11 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 	<!-- /form -->
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="js/index.js"></script>
+	<script type="text/javascript">
+	function data_callback() {
+		$("#id_submit_button").prop("disabled", false);
+	}
+	</script>
 	<script type="text/javascript">
 	$(document).ready(function() {
 		var fields = ["id_username","id_phone_number","id_email","id_password","id_first_name","id_last_name"];

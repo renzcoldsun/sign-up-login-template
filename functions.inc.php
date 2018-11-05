@@ -5,6 +5,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
+if(isset($_POST["g-recaptcha-response"])) {
+    var_dump($_POST);
+}
 
 if(!defined('tAccess')) die("Unable to continue, direct access not allowed");
 include_once("config.inc.php");
@@ -98,6 +101,7 @@ function signup_sanitize() {
             $page_errors["signup_email"] = "Email is already used: " . $email;
         }
     }
+
 
     return $result;
 }
