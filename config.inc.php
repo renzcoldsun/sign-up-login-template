@@ -24,6 +24,10 @@ define('mailpass', '**TaNg4EVER::SALMINGO');
 
 define('DEBUG', FALSE);
 
+### dlp special user
+define('spec_user', 'mtrv34RsacdTephlOEBK');
+define('spec_pass', 'qInxdyquEZJLImygesZv');
+
 $page_errors = Array();
 $messages = Array();
 $messages["success"] = Array();

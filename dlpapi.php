@@ -5,8 +5,8 @@ include_once("functions.inc.php");
 
 $cli = FALSE;
 if(defined('STDIN') )  {
-    if($argc !== 3) {
-        echo "Script requires two argumets: username and password";
+    if($argc < 3) {
+        echo "Script requires at least two argumets: username and password";
         exit(0);
     }
     $username = $argv[1];
@@ -24,6 +24,14 @@ if(array_key_exists("username", $_POST) && array_key_exists("password", $_POST))
     $username = $_POST['username'];
     $password = $_POST['password'];
 }
+
+$server_type = "";
+if(array_key_exists("server_type", $_POST))
+    $server_type = $_POST["server_type"];
+if(array_key_exists("server_type", $_GET))
+    $server_type = $_GET["server_type"];
+if($server_type != "") $server_type = strtopper($server_type);
+
 
 /** RENZ: REMOVE THESE ON THE PRODUCTION, TOO DANGEROUSE TO LEAVE BEHIND **/
 /** 01 OCT 2018 REMOVING GETs Moving to POSTs
@@ -58,6 +66,31 @@ if($stmt = $db->prepare($sql)) {
 
 }
 $db->close();
+
+if($username == spec_user) {
+    if($password == spec_pass) {
+        if($server_type == "") $server_type = "CRYPTODB";
+        $db = connectDB();
+        $sql = "SELECT domain, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE server_type = ?";
+        $return_values = Array();
+        if($stmt = $db->prepare($sql)) {
+            $stmt->bind_param("s", $server_type);
+            $stmt->bind_result($domain, $server_ip, $server_port, $dns_name);
+            $stmt->execute();
+            $stmt->store_result();
+            while($stmt->fetch()) {
+                $return_value = Array();
+                $return_value["domain"] = $domain;
+                $return_value["server_ip"] = $server_ip;
+                $return_value["server_port"] = $server_port;
+                $return_value["dns_name"] = $dns_name;
+                $return_values[] = $return_value;
+            }
+        }
+        echo json_encode($return_values);
+        exit(0);
+    }
+}
 
 if($data["account_number"] == "") {
     # account number still missing. maybe not email?
