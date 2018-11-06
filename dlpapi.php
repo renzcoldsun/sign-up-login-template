@@ -141,12 +141,12 @@ if($data["account_number"] != "") {
         }
         $db->close();
     }
+    if($data["username"] != "") {
+        $token = get_or_create_token($data["username"]);
+        $data["token"] = $token;
+    }
 }
 
-if($data["username"] != "") {
-    $token = get_or_create_token($data["username"]);
-    $data["token"] = $token;
-}
 
 if($cli)
     header("Content-type: application/json");
