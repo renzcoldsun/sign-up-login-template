@@ -108,7 +108,7 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 		<!-- tab-content -->
 	</div>
 	<!-- /form -->
-	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="js/index.js"></script>
 	<script type="text/javascript">
 	function data_callback() {

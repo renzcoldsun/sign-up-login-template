@@ -64,5 +64,8 @@ class Token_model extends MY_Model {
         $this->db->insert($this->table_name, $values);
         $id = $this->db->insert_id();
         $this->get($id, "id");
+        $this->id = $id;
+        $this->time_stamp = $now;
+        $this->unique_id = $uuid;
     }
 }

@@ -28,7 +28,7 @@ class Tokenizer extends MY_Controller {
         if($this->client_model->auth($username, $password)) {
             echo $this->token_model->getValidToken($username);
         } else {
-            echo "Invalid User!!!";
+            echo "";
         }
     }
 }
