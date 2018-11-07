@@ -67,24 +67,66 @@ if($stmt = $db->prepare($sql)) {
 }
 $db->close();
 
+// get action
+$action = "";
+foreach($_GET as $key => $value) {
+    $key = strtolower($key);
+    if($key == "action") $action = trim(strtolower($value));
+}
+
+foreach($_POST as $key => $value) {
+    $key = strtolower($key);
+    if($key == "action") $action = trim(strtolower($value));
+}
+
+// get action_array
+$action_array = "";
+foreach($_GET as $key => $value) {
+    $key = strtolower($key);
+    if($key == "actionarray") $action_array = $value;
+}
+
+foreach($_POST as $key => $value) {
+    $key = strtolower($key);
+    if($key == "actionarray") $action_array = $value;
+}
+
+// post : username=mtrv34RsacdTephlOEBK&password=qInxdyquEZJLImygesZv
 if($username == spec_user) {
     if($password == spec_pass) {
-        if($server_type == "") $server_type = "CRYPTODB";
+        $values = Array("%");
+        switch($action) {
+            case "getserverbydomain":
+                $condition = " domain LIKE ?";
+                break;
+            case "getserverbytype":
+                $condition = " server_type LIKE ?";
+                break;
+            default:
+                $condition = " server_type LIKE ?";
+                break;
+        }
+        if($action_array != "") {
+            $values = explode(" ", $action_array);
+        }
         $db = connectDB();
-        $sql = "SELECT domain, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE server_type = ?";
+        $sql = "SELECT domain, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE " . $condition;
         $return_values = Array();
-        if($stmt = $db->prepare($sql)) {
-            $stmt->bind_param("s", $server_type);
-            $stmt->bind_result($domain, $server_ip, $server_port, $dns_name);
-            $stmt->execute();
-            $stmt->store_result();
-            while($stmt->fetch()) {
-                $return_value = Array();
-                $return_value["domain"] = $domain;
-                $return_value["server_ip"] = $server_ip;
-                $return_value["server_port"] = $server_port;
-                $return_value["dns_name"] = $dns_name;
-                $return_values[] = $return_value;
+        foreach($values as $value) {
+            if($stmt = $db->prepare($sql)) {
+                $stmt->bind_param("s", $value);
+                $stmt->bind_result($domain, $server_ip, $server_port, $dns_name);
+                $stmt->execute();
+                $stmt->store_result();
+                while($stmt->fetch()) {
+                    $return_value = Array();
+                    $return_value["domain"] = $domain;
+                    $return_value["server_ip"] = $server_ip;
+                    $return_value["server_port"] = $server_port;
+                    $return_value["dns_name"] = $dns_name;
+                    $return_values[] = $return_value;
+                }
+            $stmt->close();
             }
         }
         echo json_encode($return_values);
