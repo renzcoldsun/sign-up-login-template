@@ -108,6 +108,8 @@ if($username == spec_user) {
         }
         if($action_array != "") {
             $values = explode(" ", $action_array);
+            if(strtolower($action_array) == "all")
+            $values = Array("%");
         }
         $db = connectDB();
         $sql = "SELECT domain, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE " . $condition;
