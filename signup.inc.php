@@ -11,7 +11,6 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 	<link href='css/titillium.css' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/normalize.min.css">
 	<link rel="stylesheet" href="css/style.css">
-	<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
 <body>
@@ -77,7 +76,7 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 						<input type="text" name="domain" id="id_domain" autocomplete="off" value=""/>
 					</div>
 					<div class="text-xs-center">
-						<div class="g-recaptcha" id="g-recaptcha" data-sitekey="6LeUwW4UAAAAAGdK7FbRNHOVclbjv2vFBICVPxOi" data-callback="data_callback"></div>
+						<div class="g-recaptcha" id="signup_captcha"></div>
 					</div>
 					<button id="id_submit_button" type="submit" class="button button-block" disabled="disabled" />Sign Up</button>
 				</form>
@@ -99,9 +98,12 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 						</label>
 						<input type="password" name="password" id="login_password" required autocomplete="off" />
 					</div>
+					<div class="field-wrap text-xs-center">
+						<div class="g-recaptcha" id="signin_captcha"></div>
+					</div>
 					<!-- <p class="forgot"><a href="#">Forgot Password?</a> -->
 					</p>
-					<button class="button button-block" />Log In</button>
+					<button class="button button-block" id="id_login_button" disabled="disabled" />Log In</button>
 				</form>
 			</div>
 		</div>
@@ -113,6 +115,7 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 	<script type="text/javascript">
 	function data_callback() {
 		$("#id_submit_button").prop("disabled", false);
+		$("#id_login_button").prop("disabled", false);
 	}
 	</script>
 	<script type="text/javascript">
@@ -136,5 +139,29 @@ global $username, $phone_number, $email, $password, $first_name, $last_name, $me
 		<?php } ?>
 	});
 	</script>
+	<script type="text/javascript">
+	let sitekey = "6LeUwW4UAAAAAGdK7FbRNHOVclbjv2vFBICVPxOi"
+
+	let verifySignupCallback = function () {
+		$("#id_submit_button").prop("disabled", false);
+	}
+
+	let verifySigninCallback = function () {
+		$("#id_login_button").prop("disabled", false);
+	}
+
+	onloadCaptchaCallback = function() {
+		let signupgRecaptcha = grecaptcha.render(document.getElementById('signup_captcha'), {
+			'sitekey' : sitekey,
+			'callback' : verifySignupCallback,
+		})
+		let signingRecaptcha = grecaptcha.render(document.getElementById('signin_captcha'), {
+			'sitekey' : sitekey,
+			'callback' : verifySigninCallback,
+		})
+	}
+	</script>
+	<script src="https://www.google.com/recaptcha/api.js?onload=onloadCaptchaCallback&render=explicit" async defer>
+    </script>
 </body>
 </html>
