@@ -102,6 +102,10 @@ if($username == spec_user) {
             case "getserverbytype":
                 $condition = " server_type LIKE ?";
                 break;
+            case "getsymbols":
+                getSymbols($action_array);
+                exit(0);
+                break;
             default:
                 $condition = " server_type LIKE ?";
                 break;
@@ -191,6 +195,37 @@ if($data["account_number"] != "") {
     }
 }
 
+function getSymbols($action_array) {
+    if($action_array == "") $action_array = "all";
+
+    $values = explode(" ", $action_array);
+    if(strtolower($action_array) == "all")
+        $values = Array("%");
+    $return_values = Array();
+    $sql = "SELECT symbol,exchange,formatprice,formatsize,bidvol,askvol FROM ecnsymbols WHERE symbol LIKE ?";
+    $db = connectDB();
+    foreach($values as $value) {
+        if($stmt = $db->prepare($sql)) {
+            $value = '%' . strtoupper($value) . '%';
+            $stmt->bind_param("s", $value);
+            $stmt->bind_result($symbol, $exchange, $formatprice, $formatsize, $bidvol, $askvol);
+            $stmt->execute();
+            $stmt->store_result();
+            while($stmt->fetch()) {
+                $return_value = Array();
+                $return_value["symbol"] = $symbol;
+                $return_value["exchange"] = $exchange;
+                $return_value["formatprice"] = $formatprice;
+                $return_value["formatsize"] = $formatsize;
+                $return_value["bidvol"] = $bidvol;
+                $return_value["askvol"] = $askvol;
+                $return_values[] = $return_value;
+            }
+        $stmt->close();
+        }
+    }
+    echo json_encode($return_values);
+}
 
 if($cli)
     header("Content-type: application/json");
