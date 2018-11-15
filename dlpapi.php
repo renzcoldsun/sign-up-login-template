@@ -106,6 +106,10 @@ if($username == spec_user) {
                 getSymbols($action_array);
                 exit(0);
                 break;
+            case "getuserinfo":
+                getUserInfo($action_array);
+                exit(0);
+                break;
             default:
                 $condition = " server_type LIKE ?";
                 break;
@@ -225,6 +229,65 @@ function getSymbols($action_array) {
         }
     }
     echo json_encode($return_values);
+}
+
+function getUserInfo($action_array) {
+    $aa = $action_array;
+    if(trim(strtolower($aa)) != "") {
+        $return_values = Array();
+        $email_address = explode(" ", $aa);
+        foreach($email_address as $email) {
+            $sql = "SELECT account_number, domain FROM dlpclienttable WHERE email LIKE ?";
+            $db = connectDB();
+            if($stmt = $db->prepare($sql)) {
+                $cond = '%' . $email . '%';
+                $stmt->bind_param("s", $cond);
+                $stmt->bind_result($account_number, $domain);
+                $stmt->execute();
+                $stmt->store_result();
+                $data = Array();
+                while($stmt->fetch()) {
+                    $data["account_number"] = $account_number;
+                    $data["domain"] = $domain;
+                    $return_values[] = $data;
+                }
+                if(mysqli_connect_errno()) {
+                    die("Database error" . mysqli_connect_errno() );
+                }
+            
+            }
+            $db->close();
+
+            foreach($return_values as $id => $val) {
+                $data = $val;
+                $sql = "SELECT server_type, server_ip, server_port, dns_name FROM dlpclientserverdetails WHERE domain = 'ALL' OR domain = ?";
+                $db = connectDB();
+                if($stmt = $db->prepare($sql)) {
+                    $stmt->bind_param("s", $val["domain"]);
+                    $stmt->bind_result($server_type, $server_ip, $server_port, $dns_name);
+                    $stmt->execute();
+                    $stmt->store_result();
+                    while($stmt->fetch()) {
+                        $data[$server_type ."_server_type"] = $server_type;
+                        $data[$server_type ."_server_ip"] = $server_ip;
+                        $data[$server_type ."_server_port"] = $server_port;
+                        if($dns_name != NULL AND $dns_name != "") {
+                            $data[$server_type ."_server_ip"] = $dns_name;
+                        }
+                    }
+                    if(mysqli_connect_errno()) {
+                        die("Database error" . mysqli_connect_errno() );
+                    }
+                    $return_values[$id] = $data;
+                }
+                $db->close();
+            }
+        }
+
+        echo json_encode($return_values);
+    } else {
+        echo "HI";
+    }
 }
 
 if($cli)
